@@ -29,6 +29,8 @@ env:
 
 permissions:
   contents: read
+  id-token: write  # ✅ Required for OIDC login
+
 
 jobs:
   build:
