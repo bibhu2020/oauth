@@ -48,7 +48,10 @@
     function appendMessage(sender, message, ...bgClasses) {
         const messageElement = document.createElement('div');
         messageElement.classList.add('p-2', 'my-2', 'rounded-lg', ...bgClasses);
-        messageElement.innerHTML = `<strong>${sender}:</strong> ${message}`;
+        const senderElement = document.createElement('strong');
+        senderElement.textContent = `${sender}: `;
+        messageElement.appendChild(senderElement);
+        messageElement.appendChild(document.createTextNode(message));
         chatContainer.appendChild(messageElement);
         chatContainer.scrollTop = chatContainer.scrollHeight;
     }
