@@ -59,7 +59,7 @@ jobs:
         # cache: 'npm'
 
     - name: npm install, build, and test
-      working-directory: ${{ env.CODE_PATH }}
+      working-directory: ${{ env.CODE_PATH }} #code is in /oauthapi folder
       run: |
         npm install
         npm run build --if-present
@@ -69,9 +69,9 @@ jobs:
       uses: actions/upload-artifact@v4
       with:
         name: node-app
-        path: .
+        path: ${{ env.CODE_PATH }} #upload code from /oauthapi folder
 
-    - name: Upload shared.env
+    - name: Upload shared.env #upload the checked-out .github/env/shared.env so that the deploy job can download and use it
       uses: actions/upload-artifact@v4
       with:
         name: shared-env
