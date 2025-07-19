@@ -63,12 +63,14 @@ jobs:
       with:
         name: node-app
         path: ${{ env.CODE_PATH }} #upload code from /oauthapi folder
+        retention-days: 2  # Optional (default is 90)
 
     - name: Upload shared.env #upload the checked-out .github/env/shared.env so that the deploy job can download and use it
       uses: actions/upload-artifact@v4
       with:
         name: shared-env
         path: .github/env/shared.env
+        retention-days: 2  # Optional (default is 90)
 
   deploy:
     permissions:
