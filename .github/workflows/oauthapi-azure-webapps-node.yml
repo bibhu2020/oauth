@@ -15,27 +15,17 @@
 # For more samples to get started with GitHub Action workflows to deploy to Azure: https://github.com/Azure/actions-workflow-samples
 name: "Deploy Oauth Api"
 on:
-  push:
-    branches: [ "main" ]
-    paths:
-      - 'oauthapi/**'  # Trigger only when files inside oauthapp/ change
+  # push:
+  #   branches: [ "main" ]
+  #   paths:
+  #     - 'oauthapi/**'  # Trigger only when files inside oauthapp/ change
   workflow_dispatch:
 
 env:
   CODE_PATH: 'oauthapi'                  # set this to the path to your web app project, defaults to the repository root
-  AZURE_RESOURCE_GROUP_NAME: 'oauth-rg'
   AZURE_WEBAPP_NAME: oauthv2api    # set this to your application's name
-  AZURE_WEBAPP_PORT: '8080'
-  AZURE_WEBAPP_ENVIRONMENT: 'production'
   AZURE_WEBAPP_PACKAGE_PATH: '.'      # set this to the path to your web app project, defaults to the repository root
   NODE_VERSION: '20.x'                # set this to the node version to use
-  OAUTHAPP_REDIRECT_URI: 'https://oauthv2app.azurewebsites.net/auth/callback'
-  OAUTHAPP_OAUTHAPI_URL: 'https://oauthv2api.azurewebsites.net'
-  OAUTHAPP_GENAI_URI: 'http://localhost:8082'
-  OAUTHAPP_MANAGED_IDENTITY_CLIENT_ID: 'dc787f04-0089-44f2-a0ea-2cc3645fe871'
-  OAUTHAPP_AZURE_CLIENT_ID: '908e42d2-fe86-41b7-8220-6bd41930b3b4'
-  OAUTHAPP_OAUTHAPI_AZURE_CLIENT_ID: 'fc441906-a5b6-4a4a-8bb1-d8966832770c'
-  OAUTHAPP_KEY_VAULT_NAME: 'oauthapp-kv'
 
 permissions:
   contents: read
@@ -47,6 +37,12 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v4
+
+    - name: Load shared environment variables
+      run: |
+        set -a
+        source .github/env/shared.env
+        set +a
 
     - name: Set up Node.js
       uses: actions/setup-node@v4
@@ -87,6 +83,23 @@ jobs:
       with:
         creds: ${{ secrets.AZURE_CREDENTIALS }}
 
+    - name: Set App Service application settings
+      run: |
+        az webapp config appsettings set \
+          --name ${{ env.AZURE_WEBAPP_NAME }} \
+          --resource-group ${{ env.RESOURCE_GROUP_NAME }} \
+          --settings \
+            PORT=${{ env.PORT }} \
+            NODE_ENV=${{ env.NODE_ENV }} \
+            API_KEY=${{ env.OAUTHAPI_KEY }} \
+            GEN_API_URI=${{ env.OAUTHGENAPI_URI }} \
+            MANAGED_IDENTITY_CLIENT_ID=${{ env.OAUTHAPI_MANAGED_IDENTITY_CLIENT_ID }} \
+            AZURE_TENANT_ID=${{ env.AZURE_TENANT_ID }} \
+            AZURE_CLIENT_ID=${{ env.OAUTHAPI_AZURE_CLIENT_ID }} \
+            AZURE_CLIENT_SECRET=${{ secrets.OAUTHAPI_AZURE_CLIENT_SECRET }} \
+            WEATHER_SERVICE_API_KEY=${{ secrets.OAUTHAPI_WEATHER_SERVICE_API_KEY }} \
+            APPINSIGHTS_CONNECTION_STRING=${{ env.OAUTHAPP_APPINSIGHTS_CONNECTION_STRING }} \
+            USE_CACHE=${{ env.USE_CACHE }} 
 
     - name: 'Deploy to Azure WebApp'
       id: deploy-to-webapp
