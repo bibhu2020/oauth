@@ -86,20 +86,34 @@ jobs:
     - name: Set App Service application settings
       run: |
         az webapp config appsettings set \
-          --name ${{ env.AZURE_WEBAPP_NAME }} \
-          --resource-group ${{ env.RESOURCE_GROUP_NAME }} \
+          --name "$AZURE_WEBAPP_NAME" \
+          --resource-group "$RESOURCE_GROUP_NAME" \
           --settings \
-            PORT=${{ env.PORT }} \
-            NODE_ENV=${{ env.NODE_ENV }} \
-            API_KEY=${{ env.OAUTHAPI_KEY }} \
-            GEN_API_URI=${{ env.OAUTHGENAPI_URI }} \
-            MANAGED_IDENTITY_CLIENT_ID=${{ env.OAUTHAPI_MANAGED_IDENTITY_CLIENT_ID }} \
-            AZURE_TENANT_ID=${{ env.AZURE_TENANT_ID }} \
-            AZURE_CLIENT_ID=${{ env.OAUTHAPI_AZURE_CLIENT_ID }} \
-            AZURE_CLIENT_SECRET=${{ secrets.OAUTHAPI_AZURE_CLIENT_SECRET }} \
-            WEATHER_SERVICE_API_KEY=${{ secrets.OAUTHAPI_WEATHER_SERVICE_API_KEY }} \
-            APPINSIGHTS_CONNECTION_STRING=${{ env.OAUTHAPP_APPINSIGHTS_CONNECTION_STRING }} \
-            USE_CACHE=${{ env.USE_CACHE }} 
+            PORT=$PORT \
+            NODE_ENV=$NODE_ENV \
+            API_KEY=$OAUTHAPI_KEY \
+            GEN_API_URI=$OAUTHGENAPI_URI \
+            MANAGED_IDENTITY_CLIENT_ID=$OAUTHAPI_MANAGED_IDENTITY_CLIENT_ID \
+            AZURE_TENANT_ID=$AZURE_TENANT_ID \
+            AZURE_CLIENT_ID=$OAUTHAPI_AZURE_CLIENT_ID \
+            AZURE_CLIENT_SECRET=$OAUTHAPI_AZURE_CLIENT_SECRET \
+            WEATHER_SERVICE_API_KEY=$OAUTHAPI_WEATHER_SERVICE_API_KEY \
+            APPINSIGHTS_CONNECTION_STRING=$OAUTHAPP_APPINSIGHTS_CONNECTION_STRING \
+            USE_CACHE=$USE_CACHE
+      env:
+        AZURE_WEBAPP_NAME: ${{ env.AZURE_WEBAPP_NAME }}
+        RESOURCE_GROUP_NAME: ${{ env.RESOURCE_GROUP_NAME }}
+        PORT: ${{ env.PORT }}
+        NODE_ENV: ${{ env.NODE_ENV }}
+        OAUTHAPI_KEY: ${{ env.OAUTHAPI_KEY }}
+        OAUTHGENAPI_URI: ${{ env.OAUTHGENAPI_URI }}
+        OAUTHAPI_MANAGED_IDENTITY_CLIENT_ID: ${{ env.OAUTHAPI_MANAGED_IDENTITY_CLIENT_ID }}
+        AZURE_TENANT_ID: ${{ env.AZURE_TENANT_ID }}
+        OAUTHAPI_AZURE_CLIENT_ID: ${{ env.OAUTHAPI_AZURE_CLIENT_ID }}
+        OAUTHAPI_AZURE_CLIENT_SECRET: ${{ secrets.OAUTHAPI_AZURE_CLIENT_SECRET }}
+        OAUTHAPI_WEATHER_SERVICE_API_KEY: ${{ secrets.OAUTHAPI_WEATHER_SERVICE_API_KEY }}
+        OAUTHAPP_APPINSIGHTS_CONNECTION_STRING: ${{ env.OAUTHAPP_APPINSIGHTS_CONNECTION_STRING }}
+        USE_CACHE: ${{ env.USE_CACHE }}
 
     - name: 'Deploy to Azure WebApp'
       id: deploy-to-webapp
