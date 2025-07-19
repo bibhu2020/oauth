@@ -22,10 +22,20 @@ on:
   workflow_dispatch:
 
 env:
+  CODE_PATH: 'oauthapi'                  # set this to the path to your web app project, defaults to the repository root
+  AZURE_RESOURCE_GROUP_NAME: 'oauth-rg'
   AZURE_WEBAPP_NAME: oauthv2api    # set this to your application's name
+  AZURE_WEBAPP_PORT: '8080'
+  AZURE_WEBAPP_ENVIRONMENT: 'production'
   AZURE_WEBAPP_PACKAGE_PATH: '.'      # set this to the path to your web app project, defaults to the repository root
   NODE_VERSION: '20.x'                # set this to the node version to use
-  CODE_PATH: 'oauthapi'                  # set this to the path to your web app project, defaults to the repository root
+  OAUTHAPP_REDIRECT_URI: 'https://oauthv2app.azurewebsites.net/auth/callback'
+  OAUTHAPP_OAUTHAPI_URL: 'https://oauthv2api.azurewebsites.net'
+  OAUTHAPP_GENAI_URI: 'http://localhost:8082'
+  OAUTHAPP_MANAGED_IDENTITY_CLIENT_ID: 'dc787f04-0089-44f2-a0ea-2cc3645fe871'
+  OAUTHAPP_AZURE_CLIENT_ID: '908e42d2-fe86-41b7-8220-6bd41930b3b4'
+  OAUTHAPP_OAUTHAPI_AZURE_CLIENT_ID: 'fc441906-a5b6-4a4a-8bb1-d8966832770c'
+  OAUTHAPP_KEY_VAULT_NAME: 'oauthapp-kv'
 
 permissions:
   contents: read

@@ -16,7 +16,7 @@ import AuditRouter from "./routes/auditRouter.js";
 import errorHandler from './middlewares/errorHandler.js'
 import readCookie from "./middlewares/readCookie.js";
 import { checkAuthStatus, checkSREAdminRole, checkSuperAdminRole } from "./middlewares/checkAuthStatus.js";
-import CacheMiddleware from './middlewares/cacheMiddleware.js'; // Import the CacheMiddleware class
+// import CacheMiddleware from './middlewares/cacheMiddleware.js'; // Import the CacheMiddleware class
 
 import path from 'path';
 import { fileURLToPath } from 'url';
@@ -29,7 +29,7 @@ class Server {
     logger.logTrace("Application server is starting..............");
 
     this.app = express();
-    this.cacheMiddleware = new CacheMiddleware();
+    // this.cacheMiddleware = new CacheMiddleware();
     this.configureMiddlewares();
     this.configureViewEngine();
     this.configureRoutes();
@@ -107,21 +107,23 @@ class Server {
     this.app.use("/po", 
       checkAuthStatus, 
       checkSuperAdminRole, 
-      this.cacheMiddleware.checkCache, 
+      // this.cacheMiddleware.checkCache, 
       (new PORouter()).getRouter(this.app));
     this.app.use("/home", 
-      this.cacheMiddleware.checkCache, 
+      // this.cacheMiddleware.checkCache, 
       (new HomeRouter()).getRouter(this.app));
     this.app.use("/genai", 
       checkAuthStatus, 
-      this.cacheMiddleware.checkCache,
+      // this.cacheMiddleware.checkCache,
       (new GenAIRouter()).getRouter(this.app));
     this.app.use("/audit", 
       checkAuthStatus, 
       checkSREAdminRole, 
-      this.cacheMiddleware.checkCache, 
+      // this.cacheMiddleware.checkCache, 
       (new AuditRouter()).getRouter(this.app));
-    this.app.use("/", this.cacheMiddleware.checkCache, (new HomeRouter()).getRouter(this.app));
+    this.app.use("/", 
+      // this.cacheMiddleware.checkCache, 
+      (new HomeRouter()).getRouter(this.app));
   }
 
   start() {

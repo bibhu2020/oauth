@@ -16,14 +16,14 @@ import ApiRouter from "./routes/apiRouter.js";
 import errorHandler from './middlewares/errorHandler.js'
 import {decodeRequest, autorizeRequest, checkScopeAndRole} from './middlewares/authorize.js'
 //import checkRole from './middlewares/checkRole.js'
-import CacheMiddleware from './middlewares/cacheMiddleware.js'; // Import the CacheMiddleware class
+// import CacheMiddleware from './middlewares/cacheMiddleware.js'; // Import the CacheMiddleware class
 
 class Server {
   constructor() {
 
     this.app = express();
     this.configureMiddlewares();
-    this.cacheMiddleware = new CacheMiddleware();
+    // this.cacheMiddleware = new CacheMiddleware();
     this.configureRoutes();
     this.initPassport();
 
@@ -42,7 +42,7 @@ class Server {
       apis: ['./*.js'], // Path to the API docs (your source files)
     };
 
-    this.swaggerSpec = swaggerJsdoc(options);
+    // this.swaggerSpec = swaggerJsdoc(options);
 
   }
 
@@ -102,7 +102,7 @@ class Server {
   //set the router and view layout
   configureRoutes() {
     // Serve Swagger UI
-    this.app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(this.swaggerSpec));
+    // this.app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(this.swaggerSpec));
 
     //authorize the user using bearer token "Authorization Bearer <jwt>"
     this.app.use("/api", 
@@ -118,11 +118,11 @@ class Server {
 
     //annonymous access
     this.app.use("/unauthorized/api",
-      this.cacheMiddleware.checkCache, 
+      // this.cacheMiddleware.checkCache, 
       (new ApiRouter()).getRouter(this.app));
 
     this.app.use("/",
-      this.cacheMiddleware.checkCache, 
+      // this.cacheMiddleware.checkCache, 
       (new DefaultRouter()).getRouter(this.app));
   }
 
