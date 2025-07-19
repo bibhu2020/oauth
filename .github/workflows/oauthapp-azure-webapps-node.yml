@@ -90,10 +90,8 @@ jobs:
         pwd
 
         echo "📄 Files in the current directory:"
-        ls -la
-
-        echo "📄 All files recursively:"
-        find . -type f
+        ls -la ./env
+        cat ./env/shared.env
 
 
     - name: Load shared environment variables
