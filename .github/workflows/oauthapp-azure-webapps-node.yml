@@ -54,7 +54,13 @@ jobs:
       uses: actions/upload-artifact@v4
       with:
         name: node-app
-        path: .
+        path: ${{ env.CODE_PATH }}
+
+    - name: Upload shared.env
+      uses: actions/upload-artifact@v4
+      with:
+        name: shared-env
+        path: .github/env/shared.env
 
   deploy:
     permissions:
@@ -71,10 +77,16 @@ jobs:
       with:
         name: node-app
 
+    - name: Download shared environment file
+      uses: actions/download-artifact@v4
+      with:
+        name: shared-env
+        path: ./env
+
     - name: Load shared environment variables
       run: |
         set -a
-        source .github/env/shared.env
+        source ./env/shared.env
         set +a
 
     - name: Print selected environment variables
