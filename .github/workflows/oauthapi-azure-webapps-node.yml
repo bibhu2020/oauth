@@ -15,10 +15,10 @@
 # For more samples to get started with GitHub Action workflows to deploy to Azure: https://github.com/Azure/actions-workflow-samples
 name: "Deploy Oauth Api"
 on:
-  # push:
-  #   branches: [ "main" ]
-  #   paths:
-  #     - 'oauthapi/**'  # Trigger only when files inside oauthapp/ change
+  push:
+    branches: [ "main" ]
+    paths:
+      - 'oauthapi/**'  # Trigger only when files inside oauthapp/ change
   workflow_dispatch:
 
 env:
@@ -26,6 +26,14 @@ env:
   AZURE_WEBAPP_NAME: oauthv2api    # set this to your application's name
   AZURE_WEBAPP_PACKAGE_PATH: '.'      # set this to the path to your web app project, defaults to the repository root
   NODE_VERSION: '20.x'                # set this to the node version to use
+  OAUTHAPI_KEY: ${{ vars.OAUTHAPI_KEY }}
+  OAUTHAPP_APPINSIGHTS_CONNECTION_STRING: ${{ vars.OAUTHAPP_APPINSIGHTS_CONNECTION_STRING }}
+  OAUTHAPP_SESSION_SECRET: ${{ vars.OAUTHAPP_SESSION_SECRET }}
+  AZURE_SUBSCRIPTION_ID: ${{ vars.AZURE_SUBSCRIPTION_ID }}
+  AZURE_TENANT_ID: ${{ vars.AZURE_TENANT_ID }}
+  OAUTHAPI_AZURE_CLIENT_SECRET: ${{ secrets.OAUTHAPI_AZURE_CLIENT_SECRET }}
+  OAUTHAPI_WEATHER_SERVICE_API_KEY: ${{ secrets.OAUTHAPI_WEATHER_SERVICE_API_KEY }}
+  AZURE_CREDENTIALS: ${{ secrets.AZURE_CREDENTIALS }}
 
 permissions:
   contents: read
@@ -63,6 +71,12 @@ jobs:
         name: node-app
         path: .
 
+    - name: Upload shared.env
+      uses: actions/upload-artifact@v4
+      with:
+        name: shared-env
+        path: .github/env/shared.env
+
   deploy:
     permissions:
       contents: none
@@ -77,6 +91,42 @@ jobs:
       uses: actions/download-artifact@v4
       with:
         name: node-app
+        path: .
+
+    - name: Download shared environment file
+      uses: actions/download-artifact@v4
+      with:
+        name: shared-env
+        path: .github/env
+
+    - name: List current directory and files
+      run: |
+        echo "📂 Current working directory:"
+        pwd
+
+        echo "📄 Files in the current directory:"
+        ls -la .github/env
+
+
+    - name: Export environment variables
+      shell: bash
+      run: |
+        while IFS= read -r line; do
+          # Skip comments and empty lines
+          if [[ "$line" =~ ^#.* ]] || [[ -z "$line" ]]; then
+            continue
+          fi
+          echo "$line" >> $GITHUB_ENV
+        done < .github/env/shared.env
+
+
+    - name: Print selected environment variables
+      shell: bash
+      run: |
+        echo "From YAML AZURE_WEBAPP_NAME=$AZURE_WEBAPP_NAME"
+        echo "From .env File RESOURCE_GROUP_NAME=$RESOURCE_GROUP_NAME"
+        echo "from Github Settings AZURE_SUBSCRIPTION_ID=$AZURE_SUBSCRIPTION_ID"
+        
 
     - name: Azure Login (OIDC)
       uses: azure/login@v2
@@ -100,20 +150,6 @@ jobs:
             WEATHER_SERVICE_API_KEY=$OAUTHAPI_WEATHER_SERVICE_API_KEY \
             APPINSIGHTS_CONNECTION_STRING=$OAUTHAPP_APPINSIGHTS_CONNECTION_STRING \
             USE_CACHE=$USE_CACHE
-      env:
-        AZURE_WEBAPP_NAME: ${{ env.AZURE_WEBAPP_NAME }}
-        RESOURCE_GROUP_NAME: ${{ env.RESOURCE_GROUP_NAME }}
-        PORT: ${{ env.PORT }}
-        NODE_ENV: ${{ env.NODE_ENV }}
-        OAUTHAPI_KEY: ${{ env.OAUTHAPI_KEY }}
-        OAUTHGENAPI_URI: ${{ env.OAUTHGENAPI_URI }}
-        OAUTHAPI_MANAGED_IDENTITY_CLIENT_ID: ${{ env.OAUTHAPI_MANAGED_IDENTITY_CLIENT_ID }}
-        AZURE_TENANT_ID: ${{ env.AZURE_TENANT_ID }}
-        OAUTHAPI_AZURE_CLIENT_ID: ${{ env.OAUTHAPI_AZURE_CLIENT_ID }}
-        OAUTHAPI_AZURE_CLIENT_SECRET: ${{ secrets.OAUTHAPI_AZURE_CLIENT_SECRET }}
-        OAUTHAPI_WEATHER_SERVICE_API_KEY: ${{ secrets.OAUTHAPI_WEATHER_SERVICE_API_KEY }}
-        OAUTHAPP_APPINSIGHTS_CONNECTION_STRING: ${{ env.OAUTHAPP_APPINSIGHTS_CONNECTION_STRING }}
-        USE_CACHE: ${{ env.USE_CACHE }}
 
     - name: 'Deploy to Azure WebApp'
       id: deploy-to-webapp
