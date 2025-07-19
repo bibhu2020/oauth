@@ -101,12 +101,17 @@ jobs:
         ls -la .github/env
 
 
-    - name: Load and export environment variables
+    - name: Export environment variables
       shell: bash
       run: |
         while IFS= read -r line; do
+          # Skip comments and empty lines
+          if [[ "$line" =~ ^#.* ]] || [[ -z "$line" ]]; then
+            continue
+          fi
           echo "$line" >> $GITHUB_ENV
         done < .github/env/shared.env
+
 
     - name: Print selected environment variables
       shell: bash
