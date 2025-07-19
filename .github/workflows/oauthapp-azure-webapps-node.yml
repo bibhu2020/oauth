@@ -101,12 +101,12 @@ jobs:
         ls -la .github/env
 
 
-    - name: Load shared environment variables
-      shell: bash
-      run: |
-        set -a
-        source .github/env/shared.env
-        set +a
+    - name: Load and export environment variables
+        shell: bash
+        run: |
+          while IFS= read -r line; do
+            echo "$line" >> $GITHUB_ENV
+          done < .github/env/shared.env
 
     - name: Print selected environment variables
       shell: bash
@@ -139,7 +139,8 @@ jobs:
             AZURE_CLIENT_ID=$OAUTHAPP_AZURE_CLIENT_ID \
             AZURE_API_CLIENT_ID=$OAUTHAPI_AZURE_CLIENT_ID \
             APPINSIGHTS_CONNECTION_STRING=$OAUTHAPP_APPINSIGHTS_CONNECTION_STRING \
-            KEY_VAULT_NAME=$OAUTHAPI_KEY_VAULT_NAME
+            KEY_VAULT_NAME=$OAUTHAPI_KEY_VAULT_NAME \
+          --api-version 2023-07-01
 
     - name: 'Deploy to Azure WebApp'
       id: deploy-to-webapp
