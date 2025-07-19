@@ -139,7 +139,7 @@ jobs:
           --name "$AZURE_WEBAPP_NAME" \
           --resource-group "$RESOURCE_GROUP_NAME" \
           --settings \
-            PORT=$PORT \
+            PORT=$API_PORT \
             NODE_ENV=$NODE_ENV \
             API_KEY=$OAUTHAPI_KEY \
             GEN_API_URI=$OAUTHGENAPI_URI \
