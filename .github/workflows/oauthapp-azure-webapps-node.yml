@@ -98,7 +98,7 @@ jobs:
         pwd
 
         echo "📄 Files in the current directory:"
-        ls -la ./env
+        ls -la .github/env
 
 
     - name: Load shared environment variables
