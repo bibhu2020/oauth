@@ -37,12 +37,6 @@ jobs:
     steps:
     - uses: actions/checkout@v4
 
-    - name: Load shared environment variables
-      run: |
-        set -a
-        source .github/env/shared.env
-        set +a
-
     - name: Set up Node.js
       uses: actions/setup-node@v4
       with:
@@ -77,6 +71,18 @@ jobs:
       with:
         name: node-app
 
+    - name: Load shared environment variables
+      run: |
+        set -a
+        source .github/env/shared.env
+        set +a
+
+    - name: Print selected environment variables
+      run: |
+        echo "AZURE_WEBAPP_NAME=${{ env.AZURE_WEBAPP_NAME }}"
+        echo "RESOURCE_GROUP_NAME=${{ env.RESOURCE_GROUP_NAME }}"
+        echo "AZURE_SUBSCRIPTION_ID=${{ env.AZURE_SUBSCRIPTION_ID }}"
+        
     - name: Upgrade Azure CLI (optional but recommended)
       run: |
         az upgrade --yes
