@@ -26,7 +26,15 @@ env:
   AZURE_WEBAPP_NAME: oauthv2app    # set this to your application's name
   AZURE_WEBAPP_PACKAGE_PATH: '.'      # set this to the path to your web app project, defaults to the repository root
   NODE_VERSION: '20.x'                # set this to the node version to use
-
+  OAUTHAPI_KEY: ${{ vars.OAUTHAPI_KEY }}
+  OAUTHAPP_APPINSIGHTS_CONNECTION_STRING: ${{ vars.OAUTHAPP_APPINSIGHTS_CONNECTION_STRING }}
+  OAUTHAPP_SESSION_SECRET: ${{ vars.OAUTHAPP_SESSION_SECRET }}
+  AZURE_SUBSCRIPTION_ID: ${{ vars.AZURE_SUBSCRIPTION_ID }}
+  AZURE_TENANT_ID: ${{ vars.AZURE_TENANT_ID }}
+  OAUTHAPI_AZURE_CLIENT_SECRET: ${{ secrets.OAUTHAPI_AZURE_CLIENT_SECRET }}
+  OAUTHAPI_WEATHER_SERVICE_API_KEY: ${{ secrets.OAUTHAPI_WEATHER_SERVICE_API_KEY }}
+  AZURE_CREDENTIALS: ${{ secrets.AZURE_CREDENTIALS }}
+  
 permissions:
   contents: read
   id-token: write  # ✅ Required for OIDC login
@@ -82,7 +90,7 @@ jobs:
       uses: actions/download-artifact@v4
       with:
         name: shared-env
-        path: ./env
+        path: .github/env
 
     - name: List current directory and files
       run: |
@@ -97,7 +105,7 @@ jobs:
       shell: bash
       run: |
         set -a
-        source ./env/shared.env
+        source .github/env/shared.env
         set +a
 
     - name: Print selected environment variables
@@ -107,11 +115,6 @@ jobs:
         echo "From .env File RESOURCE_GROUP_NAME=$RESOURCE_GROUP_NAME"
         echo "from Github Settings AZURE_SUBSCRIPTION_ID=$AZURE_SUBSCRIPTION_ID"
         
-    - name: Upgrade Azure CLI (optional but recommended)
-      shell: bash
-      run: |
-        az upgrade --yes
-
     - name: Azure Login (OIDC)
       uses: azure/login@v2
       with:
