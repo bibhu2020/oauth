@@ -33,14 +33,6 @@ runs:
         cache: 'npm'
         cache-dependency-path: ${{ inputs.code-path }}/package-lock.json
 
-    - name: Cache node_modules
-      uses: actions/cache@v3
-      with:
-        path: node_modules
-        key: ${{ runner.os }}-node-${{ hashFiles(format('{0}/package-lock.json', inputs.code-path)) }}
-        restore-keys: |
-          ${{ runner.os }}-node-
-
     - name: Install Node.js dependencies
       if: ${{ inputs.language == 'node' || inputs.language == 'both' }}
       run: npm ci
