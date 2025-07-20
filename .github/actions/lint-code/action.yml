@@ -1,0 +1,65 @@
+name: "Generic Linter Action"
+description: "Lint Node.js and/or Python code based on inputs"
+
+inputs:
+  code-path:
+    description: "Path to the code directory"
+    required: true
+    default: "."
+
+  language:
+    description: "Which linter to run: node, python, or both"
+    required: true
+    default: "both"
+
+  node-version:
+    description: "Node.js version to use"
+    required: false
+    default: "20"
+
+  python-version:
+    description: "Python version to use"
+    required: false
+    default: "3.11"
+
+runs:
+  using: "composite"
+  steps:
+    - name: Setup Node.js
+      if: ${{ inputs.language == 'node' || inputs.language == 'both' }}
+      uses: actions/setup-node@v4
+      with:
+        node-version: ${{ inputs.node-version }}
+
+    - name: Install Node.js dependencies
+      if: ${{ inputs.language == 'node' || inputs.language == 'both' }}
+      run: npm ci
+      working-directory: ${{ inputs.code-path }}
+      shell: bash
+
+    - name: Run ESLint
+      if: ${{ inputs.language == 'node' || inputs.language == 'both' }}
+      run: |
+        echo "Running ESLint in ${{ inputs.code-path }}..."
+        npx eslint ${{ inputs.code-path }} --ext .js,.ts
+      shell: bash
+
+    - name: Setup Python
+      if: ${{ inputs.language == 'python' || inputs.language == 'both' }}
+      uses: actions/setup-python@v5
+      with:
+        python-version: ${{ inputs.python-version }}
+
+    - name: Install Python dependencies
+      if: ${{ inputs.language == 'python' || inputs.language == 'both' }}
+      run: |
+        pip install -r ${{ inputs.code-path }}/requirements.txt || true
+        pip install flake8
+      shell: bash
+
+    - name: Run Flake8
+      if: ${{ inputs.language == 'python' || inputs.language == 'both' }}
+      run: |
+        echo "Running Flake8 in ${{ inputs.code-path }}..."
+        flake8 ${{ inputs.code-path }}
+      shell: bash
