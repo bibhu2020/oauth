@@ -1,6 +1,7 @@
 // eslint.config.js or eslint.config.ts
 import js from '@eslint/js';
 import tseslint from 'typescript-eslint';
+import globals from 'globals';
 
 export default [
   // Base JS rules
@@ -9,13 +10,13 @@ export default [
   // Base TS rules
   ...tseslint.configs.recommended,
 
-  // Your custom rule overrides with env added
+  // Your custom rule overrides with correct globals
   {
     files: ['**/*.js', '**/*.ts'],
     languageOptions: {
-      env: {
-        node: true,       // <-- This enables Node.js globals like console, process, etc.
-        es2021: true,     // Optional, enable modern ECMAScript globals
+      globals: {
+        ...globals.node,
+        ...globals.es2021,
       },
     },
     rules: {
