@@ -33,6 +33,7 @@ runs:
 
     - name: Cache node_modules
       uses: actions/cache@v3
+      working-directory: ${{ inputs.code-path }}
       with:
         path: node_modules
         key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
@@ -51,6 +52,7 @@ runs:
         echo "Running ESLint in ${{ inputs.code-path }}..."
         npx eslint ${{ inputs.code-path }} --ext .js,.ts
       shell: bash
+      working-directory: ${{ inputs.code-path }}
 
     - name: Setup Python
       if: ${{ inputs.language == 'python' || inputs.language == 'both' }}
@@ -64,6 +66,7 @@ runs:
         pip install -r ${{ inputs.code-path }}/requirements.txt || true
         pip install flake8
       shell: bash
+      working-directory: ${{ inputs.code-path }}
 
     - name: Run Flake8
       if: ${{ inputs.language == 'python' || inputs.language == 'both' }}
@@ -71,3 +74,4 @@ runs:
         echo "Running Flake8 in ${{ inputs.code-path }}..."
         flake8 ${{ inputs.code-path }}
       shell: bash
+      working-directory: ${{ inputs.code-path }}
