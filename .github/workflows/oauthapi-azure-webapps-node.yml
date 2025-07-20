@@ -45,7 +45,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v4
-      name
+      name: Checkout code
     - uses: ./.github/actions/lint-code
       name: Lint Code
       with:
