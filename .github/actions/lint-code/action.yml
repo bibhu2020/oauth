@@ -43,9 +43,8 @@ runs:
       if: ${{ inputs.language == 'node' || inputs.language == 'both' }}
       run: |
         echo "Running ESLint in ${{ inputs.code-path }}..."
-        npx eslint --ext .js,.ts
+        npx eslint ${{ inputs.code-path }} --ext .js,.ts
       shell: bash
-      working-directory: ${{ inputs.code-path }}
 
     - name: Setup Python
       if: ${{ inputs.language == 'python' || inputs.language == 'both' }}
