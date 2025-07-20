@@ -63,13 +63,13 @@ jobs:
       with:
         node-version: ${{ env.NODE_VERSION }}
         cache: 'npm'
+        cache-dependency-path: ${{ env.CODE_PATH }}/package-lock.json
 
     - name: Cache node_modules
       uses: actions/cache@v3
-      working-directory: ${{ env.CODE_PATH }}
       with:
         path: node_modules
-        key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+        key: ${{ runner.os }}-node-${{ hashFiles(format('{0}/package-lock.json', env.CODE_PATH)) }}
         restore-keys: |
           ${{ runner.os }}-node-
 

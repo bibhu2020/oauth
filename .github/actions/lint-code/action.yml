@@ -30,13 +30,14 @@ runs:
       uses: actions/setup-node@v4
       with:
         node-version: ${{ inputs.node-version }}
+        cache: 'npm'
+        cache-dependency-path: ${{ inputs.code-path }}/package-lock.json
 
     - name: Cache node_modules
       uses: actions/cache@v3
-      working-directory: ${{ inputs.code-path }}
       with:
         path: node_modules
-        key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+        key: ${{ runner.os }}-node-${{ hashFiles(format('{0}/package-lock.json', inputs.code-path)) }}
         restore-keys: |
           ${{ runner.os }}-node-
 
