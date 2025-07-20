@@ -1,5 +1,5 @@
 import { createClient } from 'redis';
-import { AzureCliCredential, ManagedIdentityCredential } from "@azure/identity";
+import { AzureCliCredential, ManagedIdentityCredential } from '@azure/identity';
 
 class CacheMiddleware {
   #credential = null;
@@ -11,7 +11,7 @@ class CacheMiddleware {
 
   async #getCredential() {
     if (!this.#credential) {
-      if (process.env.NODE_ENV === "development") {
+      if (process.env.NODE_ENV === 'development') {
         this.#credential = new AzureCliCredential();
       } else {
         this.#credential = new ManagedIdentityCredential(process.env.MANAGED_IDENTITY_CLIENT_ID);
@@ -21,13 +21,13 @@ class CacheMiddleware {
   }
 
   async #getUserPrincipalId(credential) {
-    const token = await credential.getToken("https://management.azure.com/.default");
+    const token = await credential.getToken('https://management.azure.com/.default');
     const decodedToken = JSON.parse(Buffer.from(token.token.split('.')[1], 'base64').toString());
     return decodedToken.oid;
   }
 
   async #returnPassword(credential) {
-    const redisScope = "https://redis.azure.com/.default";
+    const redisScope = 'https://redis.azure.com/.default';
     const accessToken = await credential.getToken(redisScope);
     return accessToken.token;
   }
@@ -52,13 +52,13 @@ class CacheMiddleware {
       this.#redisClient.on('error', (err) => console.error('Redis Client Error: ', err));
       await this.#redisClient.connect();
     } catch (error) {
-      throw new Error("Could not initialize Redis client: " + error.message);
+      throw new Error('Could not initialize Redis client: ' + error.message);
     }
   }
 
   checkCache = async (req, res, next) => {
     try {
-      if (process.env.USE_CACHE != "true") {
+      if (process.env.USE_CACHE !== 'true') {
         return next(); // Skip caching in development
       }
   
@@ -85,7 +85,7 @@ class CacheMiddleware {
         return next(); // Call next only after setting up the custom send method
       }
     } catch (err) {
-      console.error("Error in cache middleware: " + err.message);
+      console.error('Error in cache middleware: ' + err.message);
       next(err); // Forward the error
     }
   };

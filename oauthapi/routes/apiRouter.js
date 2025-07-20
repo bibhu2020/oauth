@@ -1,12 +1,12 @@
-import express from "express";
-import WeatherController from "../controllers/weatherController.js";
-import AzureController from "../controllers/azureController.js";
-import EmailController from "../controllers/emailController.js";
-import GraphController from "../controllers/graphController.js";
-import POController from "../controllers/poController.js";
-import OpenAIController from "../controllers/openAIControllerRaw.js";
+import express from 'express';
+import WeatherController from '../controllers/weatherController.js';
+import AzureController from '../controllers/azureController.js';
+import EmailController from '../controllers/emailController.js';
+import GraphController from '../controllers/graphController.js';
+// import POController from '../controllers/poController.js';
+import OpenAIController from '../controllers/openAIControllerRaw.js';
 // import AuditController from "../controllers/auditController.js";
-import GrafanaWebhookController from "../controllers/grafanaWebhookController.js";
+import GrafanaWebhookController from '../controllers/grafanaWebhookController.js';
 
 class ApiRouter {
   constructor() {
@@ -47,7 +47,7 @@ class ApiRouter {
   }
 
   getRouter(app) {
-    app.set("layout", "_layouts/default");
+    app.set('layout', '_layouts/default');
     return this.router;
   }
 }

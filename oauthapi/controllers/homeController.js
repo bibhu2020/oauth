@@ -1,7 +1,7 @@
 class HomeController {
   async index(req, res, next) {
     const data = {
-      message: "API Service is ready to serve.",
+      message: 'API Service is ready to serve.',
       httpCode: 200
     };
 
@@ -10,7 +10,7 @@ class HomeController {
       status: 'success',
       data: data
     });
-
+    next();
   }
 }
 

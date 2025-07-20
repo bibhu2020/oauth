@@ -1,5 +1,5 @@
-import express from "express";
-import HomeController from "../controllers/homeController.js";
+import express from 'express';
+import HomeController from '../controllers/homeController.js';
 
 class DefaultRouter {
   constructor() {
@@ -13,7 +13,7 @@ class DefaultRouter {
   }
 
   getRouter(app) {
-    app.set("layout", "_layouts/default");
+    app.set('layout', '_layouts/default');
     return this.router;
   }
 }

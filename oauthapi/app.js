@@ -1,20 +1,20 @@
-import express from "express";
+import express from 'express';
 import cors from 'cors';
 import morgan from 'morgan';
 import bodyParser from 'body-parser';
 import passport from 'passport';
 import { BearerStrategy } from 'passport-azure-ad';
 
-import swaggerUi from 'swagger-ui-express';
-import swaggerJsdoc from 'swagger-jsdoc';
+// import swaggerUi from 'swagger-ui-express';
+// import swaggerJsdoc from 'swagger-jsdoc';
 //import YAML from 'yamljs';
 //import pkg from 'express-openapi-validator';
 //const { OpenApiValidator } = pkg;
 
-import DefaultRouter from "./routes/defaultRouter.js";
-import ApiRouter from "./routes/apiRouter.js";
-import errorHandler from './middlewares/errorHandler.js'
-import {decodeRequest, autorizeRequest, checkScopeAndRole} from './middlewares/authorize.js'
+import DefaultRouter from './routes/defaultRouter.js';
+import ApiRouter from './routes/apiRouter.js';
+import errorHandler from './middlewares/errorHandler.js';
+import {decodeRequest, autorizeRequest, checkScopeAndRole} from './middlewares/authorize.js';
 //import checkRole from './middlewares/checkRole.js'
 // import CacheMiddleware from './middlewares/cacheMiddleware.js'; // Import the CacheMiddleware class
 
@@ -30,17 +30,17 @@ class Server {
     this.exceptionHandler(); //must be last method call 
 
     // Swagger definition
-    const options = {
-      definition: {
-          openapi: '3.0.0',
-          info: {
-              title: 'OAuth API',
-              version: '1.0.0',
-              description: 'OAuth PoC APIs',
-          },
-      },
-      apis: ['./*.js'], // Path to the API docs (your source files)
-    };
+    // const options = {
+    //   definition: {
+    //     openapi: '3.0.0',
+    //     info: {
+    //       title: 'OAuth API',
+    //       version: '1.0.0',
+    //       description: 'OAuth PoC APIs',
+    //     },
+    //   },
+    //   apis: ['./*.js'], // Path to the API docs (your source files)
+    // };
 
     // this.swaggerSpec = swaggerJsdoc(options);
 
@@ -105,23 +105,23 @@ class Server {
     // this.app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(this.swaggerSpec));
 
     //authorize the user using bearer token "Authorization Bearer <jwt>"
-    this.app.use("/api", 
-      autorizeRequest, checkScopeAndRole("api.read", "access_as_user"),
-  //    this.cacheMiddleware.checkCache, 
+    this.app.use('/api', 
+      autorizeRequest, checkScopeAndRole('api.read', 'access_as_user'),
+      //    this.cacheMiddleware.checkCache, 
       (new ApiRouter()).getRouter(this.app));
 
     //authorize the user using apikey "Authorization ApiKey <key>"
-    this.app.use("/key/api", 
+    this.app.use('/key/api', 
       autorizeRequest, 
       //this.cacheMiddleware.checkCache, 
       (new ApiRouter()).getRouter(this.app));
 
     //annonymous access
-    this.app.use("/unauthorized/api",
+    this.app.use('/unauthorized/api',
       // this.cacheMiddleware.checkCache, 
       (new ApiRouter()).getRouter(this.app));
 
-    this.app.use("/",
+    this.app.use('/',
       // this.cacheMiddleware.checkCache, 
       (new DefaultRouter()).getRouter(this.app));
   }

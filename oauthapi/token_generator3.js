@@ -1,6 +1,6 @@
 import express from 'express';
 import { PublicClientApplication } from '@azure/msal-node';
-import querystring from 'querystring';
+// import querystring from 'querystring';
 import dotenv from 'dotenv';
 
 dotenv.config();
@@ -11,7 +11,7 @@ const port = 3000;
 // Azure AD App Registration details
 const CLIENT_ID = '4d95fd2e-e370-47c6-827c-7270aa707238';
 const TENANT_ID = '72f988bf-86f1-41af-91ab-2d7cd011db47';
-const REDIRECT_URI = `http://localhost:3000/callback`;
+const REDIRECT_URI = 'http://localhost:3000/callback';
 const SCOPEs = ['api://4d95fd2e-e370-47c6-827c-7270aa707238/default'];
 
 // MSAL configuration

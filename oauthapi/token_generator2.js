@@ -11,8 +11,8 @@ const port = 3000;
 
 const CLIENT_ID = '4d95fd2e-e370-47c6-827c-7270aa707238';
 const TENANT_ID = '72f988bf-86f1-41af-91ab-2d7cd011db47';
-const REDIRECT_URI = `http://localhost:3000/callback`;
-const SCOPE = `https://graph.microsoft.com/.default`; // `api://4d95fd2e-e370-47c6-827c-7270aa707238/default`; // https://graph.microsoft.com/.default
+const REDIRECT_URI = 'http://localhost:3000/callback';
+const SCOPE = 'https://graph.microsoft.com/.default'; // `api://4d95fd2e-e370-47c6-827c-7270aa707238/default`; // https://graph.microsoft.com/.default
 
 
 // Azure AD OAuth endpoints
@@ -40,6 +40,7 @@ app.get('/login', (req, res) => {
 // Step 2: Azure AD redirects back to /callback with authorization code
 app.get('/callback', async (req, res) => {
   const { code, state } = req.query;
+  console.log(state);
 
   if (!code) {
     return res.status(400).send('Authorization code not found');
@@ -59,8 +60,8 @@ app.get('/callback', async (req, res) => {
       },
     });
 
-    const accessToken = tokenResponse.data.access_token;
-
+    // const accessToken = tokenResponse.data.access_token;
+    
     // Display the access token (or use it to call an API)
     res.send(`<h1>Access Token</h1><pre>${JSON.stringify(tokenResponse.data, null, 2)}</pre>`);
   } catch (error) {
