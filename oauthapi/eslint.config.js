@@ -1,25 +1,25 @@
-// eslint.config.js or eslint.config.ts
-import js from '@eslint/js';
-import tseslint from 'typescript-eslint';
+import js from "@eslint/js";
+import tseslint from "typescript-eslint";
 
 export default [
-  // Base JS rules
   js.configs.recommended,
-
-  // Base TS rules
-  ...tseslint.configs.recommended,
-
-  // Your custom rule overrides
+  tseslint.configs.recommended,
   {
-    files: ['**/*.js', '**/*.ts'],
+    files: ["**/*.js", "**/*.ts"],
+    languageOptions: {
+      env: {
+        node: true, // ✅ This tells ESLint about global Node.js variables like console, process, etc.
+        es2021: true,
+      },
+    },
     rules: {
-      'no-unused-vars': 'warn',
-      'no-console': 'warn',
-      'eqeqeq': 'error',
-      'curly': 'error',
-      'semi': ['error', 'always'],
-      'quotes': ['error', 'single'],
-      'indent': ['error', 2],
+      "no-unused-vars": "warn",
+      "no-console": "warn",
+      "eqeqeq": "error",
+      "curly": "error",
+      "semi": ["error", "always"],
+      "quotes": ["error", "single"],
+      "indent": ["error", 2],
     },
   },
 ];

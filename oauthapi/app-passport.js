@@ -1,14 +1,14 @@
 import express from "express";
-import cors from 'cors';
-import morgan from 'morgan';
-import bodyParser from 'body-parser';
-import passport from 'passport';
-import { BearerStrategy } from 'passport-azure-ad';
+import cors from "cors";
+import morgan from "morgan";
+import bodyParser from "body-parser";
+import passport from "passport";
+import { BearerStrategy } from "passport-azure-ad";
 
 import DefaultRouter from "./routes/defaultRouter.js";
 import ApiRouter from "./routes/apiRouter.js";
-import errorHandler from './middlewares/errorHandler.js'
-import decodeRequest from './middlewares/decodeRequest.js'
+import errorHandler from "./middlewares/errorHandler.js";
+import decodeRequest from "./middlewares/decodeRequest.js";
 
 class Server {
   constructor() {
@@ -26,7 +26,7 @@ class Server {
     this.app.use(cors()); //enable cors for all origin
     this.app.use(express.json());
     this.app.use(express.urlencoded({ extended: true }));
-    this.app.use(morgan('dev'));
+    this.app.use(morgan("dev"));
     this.app.use(bodyParser.json());
     this.app.use(decodeRequest); //decodes each request and reads token from it.
   }
@@ -38,15 +38,15 @@ class Server {
       validateIssuer: true,
       issuer: [`https://sts.windows.net/${process.env.AZURE_TENANT_ID}/`],
       passReqToCallback: false,
-      loggingLevel: 'info',
-      scope: ['access_as_user'],
+      loggingLevel: "info",
+      scope: ["access_as_user"],
       audience: `api://${process.env.AZURE_CLIENT_ID}`
     };
 
     const bearerStrategy = new BearerStrategy(options, (token, done) => {
       //console.log("accessToken recevied by API: " + token);
       if (!token.oid) {
-        return done(new Error('oid is not found in token'));
+        return done(new Error("oid is not found in token"));
       }
       done(null, token);
     });
@@ -62,7 +62,7 @@ class Server {
   configureRoutes() {
     //authenticates the user before routing. 
     this.app.use("/api", 
-              passport.authenticate('oauth-bearer', { session: false }), 
+              passport.authenticate("oauth-bearer", { session: false }), 
               (new ApiRouter()).getRouter(this.app));
     //annonymous access
     this.app.use("/unprotected/api",
